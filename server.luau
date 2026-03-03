@@ -1,32 +1,25 @@
-local CharacterServiceServer = {}
+local CustomReplicationServer = {}
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local CollectionService = game:GetService("CollectionService")
-
 local Networker = require(ReplicatedStorage.Packages.Networker)
 local Observer = require(ReplicatedStorage.Packages.Observer)
 
-type CharacterServiceServer = typeof(CharacterServiceServer)
+type CustomReplicationServer = typeof(CustomReplicationServer)
 
-function CharacterServiceServer.init(self :CharacterServiceServer)
+function CustomReplicationServer.init(self :CustomReplicationServer)
+	self.networker = Networker.server.new('CustomReplication',self,{
+		self.updateCharPos
+	})
+	
 	Observer.observeCharacter(function(player,character)
-		for _,part in character:GetDescendants() do
-			if part:IsA('BasePart') then
-				part.CollisionGroup = 'Characters'
-			end
-		end
+		character.Archivable = true
+		character.PrimaryPart = character.HumanoidRootPart
 	end)
+	
 end
 
-CollectionService:GetInstanceAddedSignal('Ragdoll'):Connect(function(character)
-	local humanoid = character:FindFirstChildWhichIsA('Humanoid')
-	humanoid.PlatformStand = true
-end)
+function CustomReplicationServer.updateCharPos(self :CustomReplicationServer,Player :Player,CF :CFrame)
+	self.networker:fireAllExcept(Player,'replicateCharPos',Player,CF)
+end
 
-CollectionService:GetInstanceRemovedSignal('Ragdoll'):Connect(function(character)
-	local humanoid = character:FindFirstChildWhichIsA('Humanoid')
-	humanoid.PlatformStand = false
-end)
-
-return CharacterServiceServer
+return CustomReplicationServer
