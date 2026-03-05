@@ -12,7 +12,6 @@ function CustomReplicationServer.init(self :CustomReplicationServer)
 	})
 	
 	Observer.observeCharacter(function(player,character)
-		character.Archivable = true
 		character.PrimaryPart = character.HumanoidRootPart
 	end)
 	
