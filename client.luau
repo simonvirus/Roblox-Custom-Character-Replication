@@ -25,8 +25,6 @@ function CustomReplicationClient.init(self :CustomReplicationClient)
 	-- init local char
 	Observer.observeLocalCharacter(function(character)
 		
-		local humanoid :Humanoid = character:WaitForChild('Humanoid')
-		
 		local updateLoop = RunService.Heartbeat:Connect(function()
 			
 			local HRP :BasePart = character:FindFirstChild('HumanoidRootPart')
@@ -48,9 +46,6 @@ function CustomReplicationClient.init(self :CustomReplicationClient)
 			
 		end)
 		
-		humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-		humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
-		
 		return function()
 			updateLoop:Disconnect()
 		end
@@ -63,7 +58,6 @@ function CustomReplicationClient.init(self :CustomReplicationClient)
 		if player == localPlayer then return end
 		
 		local HRP :BasePart = character:WaitForChild('HumanoidRootPart')
-		local humanoid :Humanoid = character:WaitForChild('Humanoid')
 		
 		Snapshots[character] = character:GetPivot()
 		
@@ -98,4 +92,3 @@ function CustomReplicationClient.replicateCharPos(self :CustomReplicationClient,
 end
 
 return CustomReplicationClient
-
